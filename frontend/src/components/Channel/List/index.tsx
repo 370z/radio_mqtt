@@ -27,7 +27,7 @@ const List = (props: Props) => {
           href="#"
           className="inline-flex items-center justify-center gap-2.5 bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
         >
-          Create new channel
+          Create new thing
         </Link>
         <table className="w-full table-auto">
           <thead>

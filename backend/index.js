@@ -1,23 +1,32 @@
+const path = require('path');
+const dotenvAbsolutePath = path.join(__dirname, '.env');
+
+  const dotenv = require('dotenv').config({
+    path: dotenvAbsolutePath
+  });
+  if (dotenv.error) {
+    throw dotenv.error;
+  }
 //REST API
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 app.use(helmet());
-// const db = require("./app/models");
-
-// const errorMiddleware = require("./middlewares/error");
+const db = require("./config/db");
+const { errorHandler, sequelizeErrorHandler } = require("./middlewares/errorHandlers");
 
 const { server, httpServer, ws,aedes } = require("./mqtt/mqttServer");
 const mqttClient = require("./mqtt/mqttClient");
 const port = 1883;
 const wsPort = 8888;
 
-// db.sequelize.sync();
+db.sync();
+// db.sync({ force: true })
 
 
 var corsOptions = {
-  origin: ["http://localhost:3000", "http://itdev.cmtc.ac.th:2004"],
+  origin: ["http://localhost:3000", "http://brights1.ddns.net:3000"],
 };
 app.use(cors(corsOptions));
 // parse requests of content-type - application/json
@@ -40,19 +49,23 @@ async function mqttServer() {
   });
 }
 
-// const auth = require("./app/routes/auth.routes");
-// const sensorData = require("./app/routes/sensorData.routes");
-// const userData = require("./app/routes/userData.routes");
+const authRoutes = require('./routes/authRoutes');
+const thingRoutes = require('./routes/thingRoutes');
+const channelRoutes = require('./routes/channelRoutes');
+const accessKeyRoutes = require('./routes/accessKeyRoutes');
 
-// app.use("/api/v1", auth);
-// app.use("/api/v1", sensorData);
-// app.use("/api/v1", userData);
+app.use('/api/auth', authRoutes);
+app.use('/api/thing', thingRoutes);
+app.use('/api/channel', channelRoutes);
+app.use('/api/accessKey',accessKeyRoutes)
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Nothing here :(" });
 });
-// app.use(errorMiddleware);
+// Middleware to handle errors
+app.use(sequelizeErrorHandler);
+// app.use(errorHandler);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
