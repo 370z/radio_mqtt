@@ -7,6 +7,16 @@ const BASE_URL = "https://notify-api.line.me";
 const PATH = "/api/notify";
 //mqtt client
 var mqtt = require("mqtt");
+const Channel = require("../models/channel");
+const getChannelNames = async () => {
+  try {
+    const channels = await Channel.findAll({ attributes: ['channelName'] });
+    return channels.map(channel => channel.channelName);
+  } catch (error) {
+    console.error("Error fetching channel names from the database:", error);
+    return [];
+  }
+};
 
 // mqtt client
 const options = {
@@ -48,7 +58,7 @@ client.on("connect", function () {
 //   client.subscribe("hourhumi");
 //   client.subscribe("hourcommit");
 const testTopic = 'testTopic';
-const testMessage = 'Server is running!';
+const testMessage = 'Message Server is running!';
 
 // Publish a test message to the specified topic
 client.publish(testTopic, testMessage, (err) => {

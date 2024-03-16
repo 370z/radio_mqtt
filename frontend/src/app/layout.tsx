@@ -3,6 +3,7 @@ import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
 import { useState, useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 import Loader from "@/components/common/Loader";
 
 import Sidebar from "@/components/Sidebar";
@@ -48,7 +49,7 @@ export default function RootLayout({
                 {/* <!-- ===== Main Content Start ===== --> */}
                 <main>
                   <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-                    {children}
+                  <SessionProvider>{children}</SessionProvider>
                   </div>
                 </main>
                 {/* <!-- ===== Main Content End ===== --> */}

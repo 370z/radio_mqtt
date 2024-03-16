@@ -1,7 +1,20 @@
+
 const aedes = require("aedes")();
 const server = require("net").createServer(aedes.handle);
 const httpServer = require("http").createServer();
 const ws = require("websocket-stream");
+const Channel = require("../models/channel");
+
+const getChannelNames = async () => {
+  try {
+    const channels = await Channel.findAll({ attributes: ['channelName'] });
+    // console.log(channels)
+    return channels.map(channel => channel.channelName);
+  } catch (error) {
+    console.error("Error fetching channel names from the database:", error);
+    return [];
+  }
+};
 
   // authenticate the connecting client
   aedes.authenticate = (client, username, password, callback) => {
@@ -19,20 +32,15 @@ const ws = require("websocket-stream");
   };
   
   // authorizing client to publish on a message topic
-  aedes.authorizePublish = (client, packet, callback) => {
-    if (
-      packet.topic === "outTopic" ||
-      packet.topic === "inTopic" ||
-      packet.topic === "temp" ||
-      packet.topic === "humi" ||
-      packet.topic === "commit" ||
-      packet.topic === "hourtemp" ||
-      packet.topic === "hourhumi" ||
-      packet.topic === "hourcommit"||
-      packet.topic ==="testTopic"
-    ) {
-      return callback(null);
-    }
+  aedes.authorizePublish = async (client, packet, callback) => {
+  // Get the allowed topics from the Channel models
+  const allowedTopics = await getChannelNames();
+  allowedTopics.push("testTopic");
+
+  // Check if the packet's topic is in the allowed topics
+  if (allowedTopics.includes(packet.topic)) {
+    return callback(null);
+  }
     console.log("Error ! Unauthorized publish to a topic.");
     return callback(
       new Error("You are not authorized to publish on this message topic.")
