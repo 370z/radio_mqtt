@@ -21,12 +21,9 @@ async function authenticate(username: string, password: string) {
     if (user.success) {
       console.log("User successfully logged in");
       return Promise.resolve(user);
-    } else {
-      console.log("Authentication failed");
-      return Promise.resolve(null);
     }
   } catch (error) {
-    console.error("Authentication error:", error.message);
+    console.error("Authentication error:", error);
     return Promise.resolve(null);
   }
 }

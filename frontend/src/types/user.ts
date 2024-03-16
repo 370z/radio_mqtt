@@ -1,6 +1,4 @@
 export type User = {
     id?: string | null;
-    name?: string | null;
-    email?: string | null;
-    token?: string | null;
+    roles?: string | null;
   }

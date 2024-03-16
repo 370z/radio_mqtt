@@ -18,10 +18,7 @@ export default function UserInfo({ user }: UserInfoProps) {
         Id : {user.id || 'N/A'}
       </div>
       <div>
-        Name : {user.name || 'N/A'}
-      </div>
-      <div>
-        Email : {user.email || 'N/A'}
+        Role : {user.roles || 'N/A'}
       </div>
       <button className="font-medium mt-2 text-blue-600 hover:underline" onClick={handleLogout}>
         Log out

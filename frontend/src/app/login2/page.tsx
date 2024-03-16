@@ -33,10 +33,20 @@ export default function LoginPage({searchParams}: PageProps) {
 
   const handleSubmit = async (event:FormEvent) => {
     event.preventDefault();
-    await signIn("credentials", { 
-      username: inputs.username, 
-      password: inputs.password, 
-      callbackUrl: '/test' });
+    try {
+      const result = await signIn("credentials", { 
+        redirect:false,
+        username: inputs.username, 
+        password: inputs.password });
+        if(result.error){
+          console.error(result.error);
+          return false
+        }
+        router.push('/test');
+    }
+    catch (err) {
+      console.log("error",err);
+    }
   }
   return (
     <>
